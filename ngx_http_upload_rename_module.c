@@ -210,7 +210,7 @@ ngx_module_get_http_request_body(ngx_http_request_t *r)
 
   // 拷贝 request body 的内容
   // 不清楚缓冲区是否连贯，所以采用申请内存空间的方式
-  stat_body.body.data = ngx_pcalloc(r->pool, sizeof(u_char) * stat_body.body.len);
+  stat_body.body.data = ngx_pcalloc(r->pool, sizeof(char) * stat_body.body.len);
   if (stat_body.body.data == NULL) {
     ngx_log_error(NGX_LOG_EMERG, r->connection->log, 0, "----- For HTTP request body fails to open dynamic memory -----");
   }
@@ -283,7 +283,7 @@ ngx_module_rename_file(ngx_http_request_t *r, upload_file_info_t info)
     path.len--;
   }
   full_name.len = path.len + info.name.len;
-  full_name.data = ngx_pcalloc(r->pool, sizeof(u_char *) * (full_name.len + 1));
+  full_name.data = ngx_pcalloc(r->pool, sizeof(char) * (full_name.len + 1));
 
   size_t count = 0;
   for (size_t i = 0; i < path.len; i++) {
@@ -296,7 +296,7 @@ ngx_module_rename_file(ngx_http_request_t *r, upload_file_info_t info)
   }
   *(full_name.data + full_name.len) = '\0';
 
-  path.data = ngx_pcalloc(r->pool, sizeof(u_char *) * (info.path.len + 1));
+  path.data = ngx_pcalloc(r->pool, sizeof(char) * (info.path.len + 1));
   for (count = 0; count < info.path.len; count++) {
     *(path.data + count) = *(info.path.data + count);
   }
