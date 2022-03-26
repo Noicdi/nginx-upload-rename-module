@@ -152,7 +152,7 @@ ngx_http_upload_rename_handler(ngx_http_request_t *r)
 static ngx_int_t
 ngx_module_upload_file_rename(ngx_http_request_t *r)
 {
-  if (ngx_strncmp(r->method_name.data, "POST", r->method_name.len) == 0) {
+  if (r->method & NGX_HTTP_POST) {
     ngx_int_t rc;
     upload_file_info_t info;
 
