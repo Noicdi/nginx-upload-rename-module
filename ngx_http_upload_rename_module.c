@@ -43,7 +43,7 @@ static void
 ngx_module_get_http_request_body(ngx_http_request_t *r);
 
 /* 根据 stat_body 提取上传文件的信息 */
-static void
+static ngx_int_t
 ngx_module_get_file_info(upload_file_info_t *info);
 
 /* 根据 info 修改文件信息 */
@@ -69,7 +69,7 @@ static ngx_http_module_t ngx_http_upload_rename_module_ctx = {
     NULL,
     NULL,
     NULL,
-    ngx_http_upload_rename_create_loc_conf, // 调用该函数创建本模块位于location block的配置信息存储结构
+    ngx_http_upload_rename_create_loc_conf,
     ngx_http_upload_rename_merge_loc_conf};
 
 /* 模块定义 */
@@ -134,17 +134,13 @@ ngx_http_upload_rename_handler(ngx_http_request_t *r)
   ngx_http_upload_rename_loc_conf_t *loc_conf;
   ngx_int_t result = NGX_DECLINED;
 
-  /* 获取 ngx_http_upload_rename_loc_conf */
+  // 获取 ngx_http_upload_rename_loc_conf
   loc_conf = ngx_http_get_module_loc_conf(r, ngx_http_upload_rename_module);
 
-  //ngx_log_error(NGX_LOG_EMERG, r->connection->log, 0, "----- ngx_http_upload_rename_module is start! -----");
-
-  /* echo_http_request == on */
+  // echo_http_request == on
   if (loc_conf->upload_rename_enable) {
     result = ngx_module_upload_file_rename(r);
   }
-
-  //ngx_log_error(NGX_LOG_EMERG, r->connection->log, 0, "----- ngx_http_upload_rename_module is end! -----");
 
   return result;
 }
@@ -162,17 +158,17 @@ ngx_module_upload_file_rename(ngx_http_request_t *r)
       return rc;
     }
 
-    while (stat_body.count < stat_body.body.len) {
+    for (;;) {
       // 获取文件信息
-      ngx_module_get_file_info(&info);
+      if (ngx_module_get_file_info(&info)) {
+        break;
+      }
 
       // 修改文件信息
       if (ngx_module_rename_file(r, info)) {
         ngx_log_error(NGX_LOG_EMERG, r->connection->log, 0, "----- Failed to modify file name! -----");
       }
     }
-  } else {
-    //ngx_log_error(NGX_LOG_EMERG, r->connection->log, 0, "----- The method of this HTTP request is not \"GET\" -----");
   }
 
   return NGX_DECLINED;
@@ -232,7 +228,7 @@ ngx_module_get_http_request_body(ngx_http_request_t *r)
   return;
 }
 
-static void
+static ngx_int_t
 ngx_module_get_file_info(upload_file_info_t *info)
 {
   ngx_str_null(&info->name);
@@ -242,7 +238,11 @@ ngx_module_get_file_info(upload_file_info_t *info)
   ngx_str_null(&info->size);
 
   // 获取 file.name
-  info->name.data = (u_char *)ngx_strstr(stat_body.body.data + stat_body.count, ".name\"\r\n") + 10;
+  info->name.data = (u_char *)ngx_strstr(stat_body.body.data + stat_body.count, ".name\"\r\n");
+  if (info->name.data == NULL) {
+    return 1;
+  }
+  info->name.data += 10;
   info->name.len = (size_t)((u_char *)ngx_strstr(info->name.data, "\r") - info->name.data);
 
   // 获取 file.type
@@ -263,7 +263,7 @@ ngx_module_get_file_info(upload_file_info_t *info)
 
   stat_body.count = (size_t)(info->size.data + info->size.len - stat_body.body.data + 60);
 
-  return;
+  return 0;
 }
 
 static ngx_int_t
