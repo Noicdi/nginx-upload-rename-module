@@ -1,12 +1,12 @@
-English | [简体中文](README-zh.md)
+[English](README.md) | 简体中文
 
 ## Description
 
-This module works with [nginx-upload-module](https://github.com/fdintino/nginx-upload-module) to rename files uploaded to the directory specified by `upload_store`
+此模块与 [nginx-upload-module](https://github.com/fdintino/nginx-upload-module) 配合，将其上传到`upload_store`指定目录下的文件重命名
 
-for simple renaming of file upload services, without starting other backend services to make file changes
+适用简单的文件上传服务的重命名，无需启动其他后端服务做文件改动
 
-The article on simple file uploads with the nginx-upload-module can be found [here](https://www.xqmq.icu/posts/6159a89c.html)
+配合 nginx-upload-module 实现简单文件上传的相关文章可见 [此处](https://www.xqmq.icu/posts/6159a89c.html)
 
 ## Directives
 
@@ -16,11 +16,11 @@ The article on simple file uploads with the nginx-upload-module can be found [he
 - Default：—
 - Context：`location`
 
-> Rename the uploaded file, set according to the file name before uploading. Moving files to other specified directories is not supported at the moment
+> 将上传文件重命名，根据上传前的文件名设定。暂不支持移动文件到其他指定目录
 
 ## Example configuration
 
-Copy `ngx_http_upload_rename/uploadSuccess/` to the `html` directory of Nginx, which will return the page in the directory after a successful upload
+复制`ngx_http_upload_rename/uploadSuccess/`到 Nginx 的`html`目录下，上传成功后将返回目录中的页面
 
 ```nginx
     server {
@@ -63,8 +63,11 @@ Copy `ngx_http_upload_rename/uploadSuccess/` to the `html` directory of Nginx, w
 
 ## Tips
 
-This module is only suitable for simple file upload service
+本模块只适合简单的文件上传服务
 
-For file A and B with the same file name but different contents, after uploading file A first and file B again, file A will be deleted and file B will be kept, i.e. there is no setting for collision processing of files with the same name, please be aware of this.
+对于同文件名但不同内容的文件 A 和文件 B，先上传文件 A，再次上传文件 B 后，会删除 文件 A 保留文件 B，即没有设置同名文件碰撞处理，请知悉
 
-The `location/uploadSuccess` specified by `upload_pass` may not be able to start other module functions, but only this module (not tested yet) due to the choice of mounting method during module development
+由于模块开发过程中挂载方式的选择，`upload_pass`指定的`location/uploadSuccess`可能无法启动其他模块的功能，只能启动本模块（暂未测试）
+
+
+
