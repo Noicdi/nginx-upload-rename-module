@@ -6,7 +6,7 @@ This module works with [nginx-upload-module](https://github.com/fdintino/nginx-u
 
 for simple renaming of file upload services, without starting other backend services to make file changes
 
-The article on simple file uploads with the nginx-upload-module can be found [here](https://www.xqmq.icu/posts/6159a89c.html)
+The article on simple file uploads with the nginx-upload-module can be found [here](https://www.xqmq.icu/posts/6159a89c.html)(Chinese articles)
 
 ## Directives
 
