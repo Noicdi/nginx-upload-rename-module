@@ -6,7 +6,7 @@
 
 适用简单的文件上传服务的重命名，无需启动其他后端服务做文件改动
 
-配合 nginx-upload-module 实现简单文件上传的相关文章可见 [此处](http://www.noicdi.com/posts/6159a89c.html)
+配合 nginx-upload-module 实现简单文件上传的相关文章可见 [此处](https://blog.noicdi.com/posts/6159a89c)
 
 ## Directives
 
